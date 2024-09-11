@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: laravel-env-sec
+type: Opaque
+stringData:
+  APP_ENV: demo-prod

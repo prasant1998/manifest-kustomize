@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-practice-api
+commonLabels:
+  app: deploypracticeapi
+resources:
+  - practice-cm.yaml
+  - practice-sec.yaml
+  - ../../../base/apps/api/practice-api
+  - hpa.yaml
+  - ingress-api.yaml
+patchesStrategicMerge:
+  - deployment.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deploylhpracticeapi
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deploypracticeapi
+- target:
+    version: v1
+    kind: Ingress
+    name: ingresspracticeapi
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-api.com
+    - op: replace
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: servicepracticeapi
+images:
+- name: image_url/practice-api-stage
+  newTag: '1'

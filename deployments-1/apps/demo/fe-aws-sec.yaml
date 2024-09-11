@@ -1,0 +1,20 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: fume-aws-secrets
+spec:
+  provider: aws
+  secretObjects:
+    - secretName: fume-creds-sec #k8s secret name to ref in deployment
+      type: Opaque
+      data:
+        - objectName: "fume-sec-alias" #reference object alias from parameters
+          key: fume-creds
+
+  parameters:
+    objects: |
+        - objectName: "/app/prod/demo"
+          objectType: "secretsmanager" #bypasses ARN for objectName
+          objectAlias: "fume-sec-alias" #use alias for / in secret name or pathTranslation
+          objectVersionLabel: "AWSCURRENT" #required to overcome specifying hex /app/prod/customer1-htiOWK in objectName
+    #pathTranslation: _

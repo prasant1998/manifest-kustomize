@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-demo
+  namespace: argocd
+spec:
+  project: test-prod
+  source:
+    repoURL: 'https://github.com/path'
+    path: deployments/apps/demo
+    targetRevision: deploy-prod
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: prod-demo
+    name: test-eks-prod
+  syncPolicy:
+    automated: 
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

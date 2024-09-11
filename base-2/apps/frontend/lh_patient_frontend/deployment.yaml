@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploypatientfrontend
+  labels:
+    app: deploypatientfrontend
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: deploypatientfrontend
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deploypatientfrontend
+    spec:
+      containers:
+        - name: patientfrontend
+          image: image_url/patient_frontend-stage
+          envFrom:
+            - configMapRef:
+                name: patient-env-cm
+            - secretRef:
+                name: patient-env-sec
+          ports:
+            - containerPort: 80
+              name: http-patient
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1020m"
+              memory: "4096Mi"
+          readinessProbe:
+           exec:
+            command:
+            - cat
+            - "/usr/share/nginx/_patient_frontend/index.html"
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+          livenessProbe:
+           exec:
+              command:
+                - cat
+                - "/usr/share/nginx/_patient_frontend/index.html"
+              failureThreshold: 3
+              periodSeconds: 30
+              initialDelaySeconds: 90

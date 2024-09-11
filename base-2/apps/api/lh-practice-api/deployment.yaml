@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploypracticeapi
+  labels:
+    app: deploypracticeapi
+spec:
+  revisionHistoryLimit: 3
+  #replicas: 2
+  selector:
+    matchLabels:
+      app: deploypracticeapi
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deploypracticeapi
+    spec:
+      containers:
+      - name: practiceapi
+        image: image_url/practice-api-stage
+        envFrom:
+          - configMapRef:
+              name: practice-env-cm
+          - secretRef:
+              name: lpractice-env-sec
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 512m
+          requests:
+            cpu: 300m

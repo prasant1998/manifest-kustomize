@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploybhassessmentapi
+  labels:
+    app: deploybhassessmentapi
+spec:
+  revisionHistoryLimit: 3
+  #replicas: 2
+  selector:
+    matchLabels:
+      app: deploybhassessmentapi
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deploybhassessmentapi
+    spec:
+      containers:
+      - name: lhbhassessmentapi
+        image: image_url/bh-assessment-api-stage
+        envFrom:
+            - configMapRef:
+                name: bh-assessment-env-cm
+            - secretRef:
+                name: bh-assessment-env-sec
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 512m
+          requests:
+            cpu: 300m

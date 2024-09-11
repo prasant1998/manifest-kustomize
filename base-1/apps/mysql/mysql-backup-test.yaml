@@ -1,0 +1,7 @@
+apiVersion: mysql.oracle.com/v2
+kind: MySQLBackup
+metadata:
+    name: mysql-backup-test
+spec:
+  clusterName: mysql-cluster
+  backupProfileName: mysql-backup-profile

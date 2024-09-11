@@ -1,0 +1,41 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: stage-patient-backend
+
+commonLabels:
+  app: deploypatientfrontend
+
+resources:
+  - patient-backend-cm.yaml
+  - patient-backend-sec.yaml
+  - ../../../base/apps/backend/patient_backend
+  - hpa.yaml
+  - ingress-api.yaml
+
+patchesStrategicMerge:
+  - deployment.yaml
+
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deploypatientbackend
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deploypatientbackend
+- target:
+    version: v1
+    kind: Ingress
+    name: ingresspatientbackend
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-api.com
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: servicelhpatientbackend
+
+images:
+- name: image_url/patient_backend-stage
+  newTag: '1'

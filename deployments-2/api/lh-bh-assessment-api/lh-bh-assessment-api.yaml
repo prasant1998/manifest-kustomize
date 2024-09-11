@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bh-assessment-api-stage
+  namespace: argocd
+spec:
+  project: linearhealth-stage
+  source:
+    repoURL: 'git@github.com:test/Gitops.git'
+    path: deployments/api/bh-assessment-api
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: stage-bh-assessment-api
+    name: test-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

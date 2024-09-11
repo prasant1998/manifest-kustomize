@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingresspatientfrontend
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+    - host:
+      http:
+        paths:
+         - path: /
+           pathType: Prefix
+           backend:
+             service:
+              name: servicepatientfrontend
+              port:
+                number: 80

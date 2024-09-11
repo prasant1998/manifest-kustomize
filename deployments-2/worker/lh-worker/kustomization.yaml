@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: stage-lh-worker
+
+commonLabels:
+  app: deploylhworker
+
+resources:
+  - lh-worker-cm.yaml
+  - lh-worker-sec.yaml
+  - ../../../base/apps/worker/lh-worker
+
+patchesStrategicMerge:
+  - deployment.yaml
+
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deploylhworker
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deploylhworker
+
+images:
+  - name: 052758603943.dkr.ecr.us-east-2.amazonaws.com/lh-worker-stage
+    newTag: '306'

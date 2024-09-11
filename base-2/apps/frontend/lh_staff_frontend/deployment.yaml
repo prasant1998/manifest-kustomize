@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploystafffrontend
+  namespace: default
+  labels:
+    app: deploystafffrontend
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: deploystafffrontend
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deploystafffrontend
+    spec:
+      containers:
+      - name: stafffrontend
+        image: image_url/staff_frontend-stage
+        envFrom:
+            - configMapRef:
+                name: staff-env-cm
+            - secretRef:
+                name: staff-env-sec
+        ports:
+        - containerPort: 80
+          name: http-staff
+        resources:
+          limits:
+            cpu: 150m
+          requests:
+            cpu: 100m
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - "/usr/share/nginx/_staff_frontend/index.html"
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - "/usr/share/nginx/_staff_frontend/index.html"
+          failureThreshold: 3
+          periodSeconds: 30
+          initialDelaySeconds: 90

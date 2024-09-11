@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jobdbseedadmin
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+ # ttlSecondsAfterFinished: 0
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      containers:
+      - name: admin
+        image: default
+        command: ["npx", "sequelize-cli", "db:seed:all"]
+
+      restartPolicy: Never
+  backoffLimit: 1

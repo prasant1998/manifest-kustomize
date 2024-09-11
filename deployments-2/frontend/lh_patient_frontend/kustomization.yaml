@@ -1,0 +1,48 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-patient-frontend
+commonLabels:
+  app: deploypatientfrontend
+resources:
+  - patient-cm.yaml
+  - patient-sec.yaml
+  - ../../../base/apps/frontend/patient_frontend
+  - ingress-frontend.yaml
+  - ingress-redirection.yaml
+
+patchesStrategicMerge:
+  - deployment.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deploylhpatientfrontend
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deployhpatientfrontend
+- target:
+    version: v1
+    kind: Ingress
+    name: ingresspatientfrontend
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-patient.com
+    - op: replace
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: servicepatientfrontend
+- target:
+    version: v1
+    kind: Ingress
+    name: ingresspatientredirect
+  patch: |-
+    - op: replace
+      path: metadata/annotations/nginx.ingress.kubernetes.io~1configuration-snippet
+      value: rewrite / https://staging-patient.com/dashboard/assessment-forms permanent;
+    - op: replace
+      path: /spec/rules/0/host
+      value: go.com
+images:
+  - name: 052758603943.dkr.ecr.us-east-2.amazonaws.com/lh_patient_frontend-stage
+    newTag: '1'

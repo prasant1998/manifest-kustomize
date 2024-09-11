@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: prod-demo
+#namePrefix: prod-customer1-
+#nameSuffix: 
+commonLabels:
+  customer: demo
+
+resources:
+- be-sec.yaml
+- be-cm.yaml
+- be-ingress.yaml
+- ../../../base/apps/be
+- ../../../base/apps/be-workers
+- fe-cm.yaml
+- fe-aws-sec.yaml
+- fe-ingress.yaml
+- ../../../base/apps/fe
+
+patchesStrategicMerge:
+- be-deploy.yaml
+- fe-deploy.yaml
+- worker-deploy.yaml
+
+images:
+- name: image_url/backend
+  newTag: 089dc0752584509a6c8e8fc3686d119c07f3f2e0
+- name: image_url/workers
+  newTag: 089dc0752584509a6c8e8fc3686d119c07f3f2e0
+- name: image_url/frontend
+  newTag: 089dc0752584509a6c8e8fc3686d119c07f3f2e0

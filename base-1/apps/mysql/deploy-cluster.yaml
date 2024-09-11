@@ -1,0 +1,33 @@
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mysql-cluster
+spec:
+  secretName: mysql-sec
+  tlsUseSelfSigned: true
+  instances: 1
+  version: 8.0.30
+  router:
+    instances: 1
+    version: 8.0.30
+  datadirVolumeClaimTemplate:
+    accessModes: 
+      - ReadWriteOnce
+    storageClassName: gp3
+    resources:
+      requests:
+        storage: 4Gi
+  backupProfiles:       
+  - name: mysql-backup-profile
+    dumpInstance:
+      dumpOptions:
+        excludeTables: []
+        excludeSchemas: []
+      storage:
+        persistentVolumeClaim:
+          claimName: mysql-backup-pvc
+  backupSchedules:
+  - name: mysql-backup-schedule
+    schedule: "0 0 * * *"
+    backupProfileName: mysql-backup-profile
+    enabled: true

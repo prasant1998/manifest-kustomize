@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jobdbseedlhbhassessmentapi
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+ # ttlSecondsAfterFinished: 0
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      containers:
+      - name: bhassessmentapi
+        image: image_url/lbh-assessment-api-stage
+        command: ["npx", "sequelize-cli", "db:seed:all"]
+
+      volumes:
+      - name: sequelize-config
+        secret:
+          secretName: sequelize-config
+
+      restartPolicy: Never
+  backoffLimit: 1

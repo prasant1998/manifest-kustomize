@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-lh-staff-frontend
+commonLabels:
+  app: deploylhstafffrontend
+resources:
+  - lh-staff-cm.yaml
+  - lh-staff-sec.yaml
+  - ../../../base/apps/frontend/lh_staff_frontend
+  - ingress-frontend.yaml
+patchesStrategicMerge:
+  - deployment.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deploylhstafffrontend
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deploylhstafffrontend
+- target:
+    version: v1
+    kind: Ingress
+    name: ingresslhstafffrontend
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-staff.linear.health
+    - op: replace
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: servicelhstafffrontend
+images:
+- name: 052758603943.dkr.ecr.us-east-2.amazonaws.com/lh_staff_frontend-stage
+  newTag: '1'

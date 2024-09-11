@@ -1,0 +1,21 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: joblhpracticeapi
+#   annotations:
+#     argocd.argoproj.io/hook: PreSync
+#     argocd.argoproj.io/hook-delete-policy: HookSucceeded
+# spec:
+#  # ttlSecondsAfterFinished: 0
+#   activeDeadlineSeconds: 300
+#   template:
+#     spec:
+#       containers:
+#       - name: lhpracticeapi
+#         image: default
+#         command: ["npx", "sequelize-cli", "db:migrate", "--env", "development"]
+#         envFrom:
+#         - secretRef:
+#            name: ${SECRET}
+#       restartPolicy: Never
+#   backoffLimit: 1

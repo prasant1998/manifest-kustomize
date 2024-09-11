@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lh-worker-stage
+  namespace: argocd
+spec:
+  project: linearhealth-stage
+  source:
+    repoURL: 'git@github.com:linear-health/Gitops.git'
+    path: deployments/worker/lh-worker
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: stage-lh-worker
+    name: linearhealth-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

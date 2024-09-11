@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploylhworker
+  labels:
+    app: deploylhworker
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: deploylhworker
+  minReadySeconds: 5
+  strategy:
+    type: Recreate
+
+  template:
+    metadata:
+      labels:
+        app: deploylhworker
+    spec:
+      serviceAccountName: lh-sqs-s3-stage
+      containers:
+      - name: lhworker
+        image: 052758603943.dkr.ecr.us-east-2.amazonaws.com/lh-worker-stage
+        envFrom:
+          - configMapRef:
+              name: lh-worker-env-cm
+          - secretRef:
+              name: lh-worker-env-sec
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 512m
+          requests:
+            cpu: 300m

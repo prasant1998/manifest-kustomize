@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lh-staff-frontend-stage
+  namespace: argocd
+spec:
+  project: linearhealth-stage
+  source:
+    repoURL: 'git@github.com:linear-health/Gitops.git'
+    path: deployments/frontend/lh_staff_frontend
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: stage-lh-staff-frontend
+    name: linearhealth-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

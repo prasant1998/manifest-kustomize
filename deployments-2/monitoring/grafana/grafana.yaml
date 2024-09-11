@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+
+kind: Application
+metadata:
+  name: grafana-stage
+  namespace: argocd
+spec:
+  project: test-stage
+  source:
+    repoURL: 'git@github.com:test/Gitops.git'
+    path: deployments/monitoring/grafana
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: monitoring
+    name: test-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

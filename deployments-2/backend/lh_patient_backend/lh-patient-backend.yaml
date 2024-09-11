@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: patient-backend-stage
+  namespace: argocd
+spec:
+  project: test-stage
+  source:
+    repoURL: 'git@github.com:test/Gitops.git'
+    path: deployments/backend/patient_backend
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: stage-patient-backend
+    name: test-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

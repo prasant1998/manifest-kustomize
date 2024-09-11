@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploypatientbackend
+  namespace: default
+  labels:
+    app: deploypatientbackend
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: deploypatientbackend
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deploypatientbackend
+    spec:
+      containers:
+      - name: patientbackend
+        image: image_url/backend-stage
+        envFrom:
+            - configMapRef:
+                name: patient-backend-env-cm
+            - secretRef:
+                name: patient-backend-env-sec
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 512m
+          requests:
+            cpu: 300m

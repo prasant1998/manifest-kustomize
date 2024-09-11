@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fume
+spec:
+  template:
+    spec:
+      nodeSelector:
+        alpha.eksctl.io/nodegroup-name: test-eks-prod-mng-pub03
+      serviceAccountName: prod-demo-sa
+      volumes:
+      - name: fume-aws-secrets #required for secrets-store
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "fume-aws-secrets"
+      containers:
+      - name: fume        
+        volumeMounts:
+        - name: fume-aws-secrets #required for secrets-store
+          mountPath: "/mnt/secrets"
+          readOnly: true
+        env:
+        - name: FUME_CREDS
+          valueFrom:
+            secretKeyRef:
+              name: "fume-creds-sec" #secretName from SecretProviderClass
+              key: fume-creds 

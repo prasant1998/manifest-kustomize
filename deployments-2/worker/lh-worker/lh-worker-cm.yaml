@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lh-worker-env-cm
+data: 
+  AWS_DEFAULT_REGION: us-east-2
+  AWS_REGION: us-east-2
+  AWS_ROLE_ARN: arn:aws:iam::052758603943:role/lh-sqs-develop-role
+  AWS_STS_REGIONAL_ENDPOINTS: regional
+  AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+  ASSESS_SHORT_LINK_URL: https://assess.linear.health/
+  AWS_S3_BUCKET_VOICE: lh-voice-dev
+  DB_DIALECT: postgres
+  DB_HOST: lh-stage-rds.casu9wp7u42p.us-east-2.rds.amazonaws.com
+  DB_NAME: lh-stage
+  DB_PORT: '5432'
+  FORM_SHORT_LINK_URL: https://form.linear.health/
+  MSG_SHORT_LINK_URL: https://msg.linear.health/
+  NODE_ENV: STAGE
+  PATIENT_API_URL: https://staging-api.linear.health/patient-api/
+  PATIENT_FRONTEND_URL: https://staging-patient.linear.health/
+  PORT: '20012'
+  PRACTICE_API_URL: https://staging-api.linear.health/practice-api/
+  PUSHER_APP_CLUSTER: us2
+  QUEUE_ENV: STAGE
+  SHORT_LINK_URL: https://go.linear.health/
+  SMTP_PORT: '465'
+  STAFF_FRONTEND_URL: https://staging-staff.linear.health/
+  VERIFIED_EMAIL: support@linear.health
+  SES_HOST: email-smtp.us-east-2.amazonaws.com
+  NEXT_PUBLIC_JWT_EXPIRATION: 5m
+  NEXT_PUBLIC_BASE_URL: https://staging-api.linear.health/admin-api
+  NEXT_IMAGE_BASE_URL: https://lh-img.s3.us-east-2.amazonaws.com/
+  AWS_S3_BUCKET_NAME: lh-img
+
+

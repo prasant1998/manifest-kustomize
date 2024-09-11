@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-admin-frontend
+commonLabels:
+  app: deploylhadminfrontend
+resources:
+  - admin-cm.yaml
+  - admin-sec.yaml
+  - ../../../base/apps/frontend/admin-frontend
+  - ingress-frontend.yaml
+patchesStrategicMerge:
+  - deployment.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deployadminfrontend
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deployadminfrontend
+- target:
+    version: v1
+    kind: Ingress
+    name: ingressadminfrontend
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-admin.com
+    - op: replace
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: serviceadminfrontend
+images:
+  - name: image_url/lh-admin-frontend-stage
+    newTag: '1'

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lh-sqs-develop
+  namespace: develop
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::052758603943:role/lh-sqs-develop-role

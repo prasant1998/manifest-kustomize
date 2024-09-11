@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicestafffrontend
+spec:
+  selector:
+    app: deploystafffrontend
+  type: NodePort
+  ports:
+  - name: http-staff
+    protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31200

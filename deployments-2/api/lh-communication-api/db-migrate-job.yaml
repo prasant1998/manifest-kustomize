@@ -1,0 +1,31 @@
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: jobdbmigratelhcommunicationapi
+#   annotations:
+#     argocd.argoproj.io/hook: PreSync
+#     argocd.argoproj.io/hook-delete-policy: HookSucceeded
+# spec:
+#  # ttlSecondsAfterFinished: 0
+#   activeDeadlineSeconds: 300
+#   template:
+#     spec:
+#       containers:
+#       - name: lhcommunicationapi
+#         image: default
+#         command: ["npx", "sequelize-cli", "db:migrate", "--env", "development"]
+#         envFrom:
+#         - secretRef:
+#            name: ${SECRET}
+#         volumeMounts:
+#         - mountPath: /lh-practice-api/database.sequelize-config.json
+#           name: sequelize-config
+#           subPath: database.sequelize-config.json
+
+#       volumes:
+#       - name: sequelize-config
+#         secret:
+#           secretName: sequelize-config
+
+#       restartPolicy: Never
+#   backoffLimit: 1

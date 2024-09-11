@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite / https://staging-patient.com/dashboard/assessment-forms$uri permanent;
+    kubernetes.io/ingress.class: nginx
+  name: ingresslhpatientredirect01
+spec:
+  rules:
+    - host: go.com
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite / https://staging-patient.com/dashboard/assessment-forms$uri permanent;
+    kubernetes.io/ingress.class: nginx
+  name: ingresslhpatientredirect02
+spec:
+  rules:
+    - host: assess.com
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite / https://staging-patient.com/dashboard/message-thread$uri permanent;
+    kubernetes.io/ingress.class: nginx
+  name: ingresslhpatientredirect03
+spec:
+  rules:
+    - host: msg.com
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite / https://staging-patient.com/eforms/welcome$uri permanent;
+    kubernetes.io/ingress.class: nginx
+  name: ingresslhpatientredirect04
+spec:
+  rules:
+    - host: form.com
+---

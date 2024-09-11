@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-end-worker
+  labels:
+    app: back-end-worker
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-end-worker
+  template:
+    metadata:
+      labels:
+        app: back-end-worker
+    spec:
+      containers:
+        - name: back-end-worker
+          image: image_url 
+          envFrom:
+            - configMapRef:
+                name: laravel-env-cm
+            - secretRef:
+                name: laravel-env-sec
+          ports:
+            - containerPort: 80
+              name: http-laravel           
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
+          #   timeoutSeconds: 2
+          #   failureThreshold: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
+          #   timeoutSeconds: 2
+          #   failureThreshold: 10            
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "1024Mi"
+          #securityContext:
+          #  runAsUser: 82
+          #  runAsGroup: 82

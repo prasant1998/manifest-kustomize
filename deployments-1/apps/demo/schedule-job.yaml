@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: schedule-cronjob
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: schedule-cronjob
+            image: 389132740677.dkr.ecr.us-east-1.amazonaws.com/preview-delete:latest
+            imagePullPolicy: IfNotPresent
+            command: ["/bin/bash", "-c"]
+            args:
+            - >-
+               aws eks update-kubeconfig --region us-east-1 --name cluster_name &&
+               apt-get install -y kubectl &&
+               POD=$(kubectl -n prod-demo get pod -l app=back-end-worker -o jsonpath="{.items[0].metadata.name}") &&
+               kubectl -n prod-demo exec -it $POD -- php artisan schedule:run
+               
+          restartPolicy: OnFailure

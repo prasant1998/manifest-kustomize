@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eforms-api-stage
+  namespace: argocd
+spec:
+  project: test-stage
+  source:
+    repoURL: 'git@github.com:test/Gitops.git'
+    path: deployments/api/lh-eforms-api
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: stage-eforms-api
+    name: test-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

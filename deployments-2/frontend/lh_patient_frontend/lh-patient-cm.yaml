@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: patient-env-cm
+data:
+  PORT: '7050'
+  

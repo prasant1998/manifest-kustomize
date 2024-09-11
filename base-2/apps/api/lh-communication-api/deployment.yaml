@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploycommunicationapi
+  labels:
+    app: deploycommunicationapi
+spec:
+  revisionHistoryLimit: 3
+  #replicas: 2
+  selector:
+    matchLabels:
+      app: deploycommunicationapi
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deploycommunicationapi
+    spec:
+      containers:
+      - name: communicationapi
+        image: image_url/communication-api-stage
+        envFrom:
+            - configMapRef:
+                name: communication-env-cm
+            - secretRef:
+                name: communication-env-sec
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 512m
+          requests:
+            cpu: 300m

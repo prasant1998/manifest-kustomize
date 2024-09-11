@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-bh-assessment-api
+commonLabels:
+  app: deploybhassessmentapi
+resources:
+  - bh-assessment-cm.yaml
+  - bh-assessment-sec.yaml
+  - ../../../base/apps/api/bh-assessment-api
+  - hpa.yaml
+  - ingress-api.yaml
+patchesStrategicMerge:
+  - deployment.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deploybhassessmentapi
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deploybhassessmentapi
+- target:
+    version: v1
+    kind: Ingress
+    name: ingressbhassessmentapi
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-api.com
+    - op: replace
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: servicelhbhassessmentapi
+images:
+- name: image_url/bh-assessment-api-stage
+  newTag: '1'

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployadminfrontend
+  namespace: default
+  labels:
+    app: deployadminfrontend
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: deployadminfrontend
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: deployadminfrontend
+    spec:
+      containers:
+      - name: adminfrontend
+        image: image_url/admin-frontend-stage
+        envFrom:
+            - configMapRef:
+                name: admin-env-cm
+            - secretRef:
+                name: admin-env-sec
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 150m
+          requests:
+            cpu: 100m
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - "/usr/share/nginx/admin-frontend/index.html"
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          successThreshold: 1
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - "/usr/share/nginx/admin-frontend/index.html"
+          failureThreshold: 3
+          periodSeconds: 30
+          initialDelaySeconds: 90

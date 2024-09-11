@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stage-eforms-api
+commonLabels:
+  app: deployeformsapi
+resources:
+- eforms-cm.yaml
+- eforms-sec.yaml
+- ../../../base/apps/api/eforms-api
+- hpa.yaml
+- ingress-api.yaml
+patchesStrategicMerge:
+- deployment.yaml
+patchesJson6902:
+- target:
+    version: v1
+    kind: Deployment
+    name: deployeformsapi
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/name
+      value: deployeformsapi
+- target:
+    version: v1
+    kind: Ingress
+    name: ingresseformsapi
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: staging-api.linear.health
+    - op: replace
+      path: /spec/rules/0/http/paths/0/backend/service/name
+      value: servicelheformsapi 
+images:
+- name: image_url/eforms-api-stage
+  newTag: '1'

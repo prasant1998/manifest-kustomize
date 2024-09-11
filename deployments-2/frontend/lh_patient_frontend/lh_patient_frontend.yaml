@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: patient-frontend-stage
+  namespace: argocd
+spec:
+  project: test-stage
+  source:
+    repoURL: 'git@github.com:linear-health/Gitops.git'
+    path: deployments/frontend/lh_patient_frontend
+    targetRevision: deploy-stage
+    directory:
+      recurse: false
+      jsonnet: {}
+  destination:
+    namespace: stage-patient-frontend
+    name: test-eks-stage
+  syncPolicy:   
+    syncOptions:
+      - CreateNamespace=true

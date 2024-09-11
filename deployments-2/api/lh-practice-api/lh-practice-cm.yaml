@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: practice-env-cm
+data:
+  API_PORT: '3000'
+  
